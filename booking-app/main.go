@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -60,11 +61,24 @@ func main() {
 	text0 := widget.NewLabel("Welcome To This App V1.0")
 	button1 := widget.NewButtonWithIcon("Spa Status", theme.InfoIcon(), func() {
 		side := container.New(layout.NewVBoxLayout(), button0)
-		content := container.New(layout.NewHBoxLayout(),
-			side, widget.NewSeparator(), image, text0, text1)
-		w.SetContent(content)
-		w.Show()
+		content := container.New(layout.NewHBoxLayout(), side, widget.NewSeparator(), image, text0, text1)
 
+		w.Show()
+		for range time.Tick(checkInterval * time.Second) {
+
+			fact, err := getData(url)
+			if err != nil {
+				log.Fatal(err)
+			}
+			text0.SetText(url)
+			text1.SetText(fact.Value)
+			if fact.Value == "Healthy" {
+				fmt.Print("Heælthy1")
+			}
+			if fact.Value == "Unhelthy" {
+				fmt.Printf("Unleahty1")
+			}
+		}
 	})
 	side := container.New(layout.NewVBoxLayout(), button0, button1)
 	content := container.New(layout.NewHBoxLayout(), side, widget.NewSeparator(), image, text0, text1)
