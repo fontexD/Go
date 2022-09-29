@@ -60,7 +60,8 @@ func main() {
 	text0 := widget.NewLabel("Welcome To This App V1.0")
 	button1 := widget.NewButtonWithIcon("Spa Status", theme.InfoIcon(), func() {
 		side := container.New(layout.NewVBoxLayout(), button0)
-		content := container.New(layout.NewHBoxLayout(), side, widget.NewSeparator(), image, text0, text1)
+		content := container.New(layout.NewHBoxLayout(),
+			side, widget.NewSeparator(), image, text0, text1)
 		w.SetContent(content)
 		w.Show()
 
