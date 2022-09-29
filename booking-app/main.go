@@ -5,6 +5,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"image/color"
 	"log"
 	"net/http"
 	"time"
@@ -60,25 +61,25 @@ func main() {
 	text1 := widget.NewLabel("")
 	text0 := widget.NewLabel("Welcome To This App V1.0")
 	button1 := widget.NewButtonWithIcon("Spa Status", theme.InfoIcon(), func() {
-		side := container.New(layout.NewVBoxLayout(), button0)
-		content := container.New(layout.NewHBoxLayout(), side, widget.NewSeparator(), image, text0, text1)
-
-		w.Show()
 		for range time.Tick(checkInterval * time.Second) {
 
 			fact, err := getData(url)
 			if err != nil {
 				log.Fatal(err)
 			}
-			text0.SetText(url)
-			text1.SetText(fact.Value)
-			if fact.Value == "Healthy" {
-				fmt.Print("Heælthy1")
-			}
-			if fact.Value == "Unhelthy" {
-				fmt.Printf("Unleahty1")
-			}
+			text1 := canvas.NewText(url, color.White)
+			text2 := canvas.NewText(fact.Value, color.White)
+			image1 := canvas.NewImageFromFile("unhealthy.png")
+			image1.SetMinSize(fyne.Size{Width: 30, Height: 30})
+			image1.FillMode = canvas.ImageFill(canvas.ImageScalePixels)
+			grid := container.New(layout.NewGridLayout(3), text1, text2, image1)
+
+			side := container.New(layout.NewVBoxLayout(), button0)
+			content2 := container.New(layout.NewHBoxLayout(), side, widget.NewSeparator(), grid)
+			w.SetContent(content2)
+			w.Show()
 		}
+
 	})
 	side := container.New(layout.NewVBoxLayout(), button0, button1)
 	content := container.New(layout.NewHBoxLayout(), side, widget.NewSeparator(), image, text0, text1)
