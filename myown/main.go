@@ -24,7 +24,7 @@ func main() {
 
 	// Infinity loop which render every 5 second
 loop:
-	for _, x := range Urls {
+	for x := range Urls {
 		JsonOutput, err = Getdata(Urls[x])
 		//error checking
 		if err != nil {
