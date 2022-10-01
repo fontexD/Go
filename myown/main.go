@@ -7,34 +7,47 @@ import (
 	"net/http"
 )
 
+// Define strucutre of data
 type Data struct {
 	Name  string `json:"key"`
 	Value string `json:"value"`
 }
 
 func main() {
+	//Define var Jsonoutput to what Datastructure it holds
 	var JsonOutput Data
-	Urls := "http://127.0.0.1:8080/health"
-	Getdata(Urls)
-	fmt.Print(JsonOutput.Value, error)
+	var err error
+
+	// Create array of urls to send t function GetData
+	Urls := []string{"http://127.0.0.1:8080/health", "http://127.0.1.1:8080/heath"}
+
+	// Infinity loop which render every 5 second
+loop:
+	for x := range Urls {
+		JsonOutput, err = Getdata(Urls[x])
+		//error checking
+		if err != nil {
+			log.Fatal(err)
+		}
+		// print .Value from Jsonoutput Struct variable
+		fmt.Println(JsonOutput.Value)
+		goto loop
+	}
 }
 
+// Func to pull data from  http.get, it takes Urls as input/call , Returns
 func Getdata(Urls string) (Data, error) {
 
 	var JsonOutput Data
-
 	rsp, err := http.Get(Urls)
 	if err != nil {
 		log.Fatal(err)
-		return JsonOutput, err
 	}
-
 	defer rsp.Body.Close()
 
 	err = json.NewDecoder(rsp.Body).Decode(&JsonOutput)
 	if err != nil {
 		log.Fatal(err)
-		return JsonOutput, err
 	}
 	return JsonOutput, err
 }
