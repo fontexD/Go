@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"time"
 )
 
 // Define strucutre of data
@@ -19,11 +20,11 @@ func main() {
 	var err error
 
 	// Create array of urls to send t function GetData
-	Urls := []string{"http://127.0.0.1:8080/health", "http://127.0.1.1:8080/heath"}
+	Urls := []string{"http://127.0.0.1:8080/health", "http://127.0.1.1:8080/heath", "http://127.0.2.1:8080/heath"}
 
 	// Infinity loop which render every 5 second
 loop:
-	for x := range Urls {
+	for _, x := range Urls {
 		JsonOutput, err = Getdata(Urls[x])
 		//error checking
 		if err != nil {
@@ -31,6 +32,9 @@ loop:
 		}
 		// print .Value from Jsonoutput Struct variable
 		fmt.Println(JsonOutput.Value)
+		time.Sleep(5 * time.Second)
+		fmt.Print(x)
+		fmt.Print(Urls)
 		goto loop
 	}
 }
