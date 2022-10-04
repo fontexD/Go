@@ -1,46 +1,58 @@
 package main
 
 import (
-	"fyne.io/fyne/v2"
-	"fyne.io/fyne/v2/app"
-	"fyne.io/fyne/v2/container"
-	"fyne.io/fyne/v2/theme"
-	"fyne.io/fyne/v2/widget"
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+	"time"
 )
 
+// Define strucutre of data
+type Data struct {
+	Name  string `json:"key"`
+	Value string `json:"value"`
+}
+
 func main() {
-	var content fyne.CanvasObject
-	a := app.New()
-	a.Settings().SetTheme(theme.DarkTheme())
-	w := a.NewWindow("Fyne Demo")
+	//Define var Jsonoutput to what Datastructure it holds
+	var JsonOutput Data
+	var err error
 
-	w.SetMaster()
+	// Create array of urls to send t function GetData
+	Urls := []string{"http://127.0.0.1:8080/health", "http://127.0.1.1:8080/heath", "http://127.0.2.1:8080/heath"}
 
-	containers := container.NewMax()
-	title := widget.NewLabel("Application Status")
-	intro := widget.NewLabel("Storage.plan2learn.dk")
-	intro2 := widget.NewLabel("")
-	intro2.SetText("hej")
-	intro.Wrapping = fyne.TextWrapWord
-	TABCONTENT := container.NewBorder(container.NewVBox(title, intro, intro2), nil, nil, containers)
+	// Infinity loop which render every 5 second
+	//loop:
+	//for x := range Urls {
+	JsonOutput, err = Getdata(Urls[0])
+	//error checking
+	if err != nil {
+		log.Fatal(err)
+	}
+	// print .Value from Jsonoutput Struct variable
+	fmt.Println(JsonOutput.Value)
+	time.Sleep(5 * time.Second)
+	fmt.Print(x)
+	fmt.Print(Urls)
+	//goto loop
+}
 
-	tabs := container.NewAppTabs(
-		container.NewTabItem("TABNAME", TABCONTENT),
-		container.NewTabItem("Tab 2", widget.NewLabel("World!")),
-	)
+//}
 
-	//tabs.Append(container.NewTabItemWithIcon("Home", theme.HomeIcon(), widget.NewLabel("Home tab")))
+// Func to pull data from  http.get, it takes Urls as input/call , Returns
+func Getdata(Urls string) (Data, error) {
 
-	tabs.SetTabLocation(container.TabLocationLeading)
+	var JsonOutput Data
+	rsp, err := http.Get(Urls)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rsp.Body.Close()
 
-	content = container.NewBorder(
-		container.NewVBox(title, intro, intro2), nil, nil, containers)
-
-	split := container.NewHSplit(tabs, content)
-
-	split.Offset = 0
-	w.SetContent(split)
-
-	w.Resize(fyne.NewSize(640, 460))
-	w.ShowAndRun()
+	err = json.NewDecoder(rsp.Body).Decode(&JsonOutput)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return JsonOutput, err
 }
