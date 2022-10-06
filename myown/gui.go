@@ -46,12 +46,14 @@ func main() {
 	W := a.NewWindow("Application-OutSight")
 	W.Resize(fyne.NewSize(640, 460))
 
+	menuBar := []strings{"Home","App-Status"}
+	
 	listView := widget.NewList(func() int {
-		return len(moviesResults.Results)
+		return len(menuBar)
 	}, func() fyne.CanvasObject {
 		return widget.NewLabel("template")
-	}, func(id widget.ListItemID, object fyne.CanvasObject) {
-		object.(*widget.Label).Text = moviesResults.Results[id].Name
+	}, func(id widget.ListItemID, o fyne.CanvasObject) {
+		o.(*widget.Label).SetText = (menuBar[id])
 
 	})
 
