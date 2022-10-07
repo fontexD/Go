@@ -1,9 +1,7 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -12,62 +10,59 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
-type MovieResults struct {
-	Results []Movie `json:"results"`
-}
-
-type Movie struct {
-	Name string `json:"Name"`
-}
-
-func LoadMovies() (MovieResults, error) {
-	data, err := ioutil.ReadFile("./buttons.json")
-	if err != nil {
-		return MovieResults{}, err
-	}
-	var movieResults MovieResults
-	err = json.Unmarshal(data, &movieResults)
-	if err != nil {
-		return MovieResults{}, err
-	}
-	return movieResults, nil
-}
+var Menu = []string{"Home", "App-Status"}
 
 func main() {
+	contenttext := widget.NewLabel("Welcome to this App")
+	loadUI(contenttext)
+}
 
-	moviesResults, err := LoadMovies()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("movies: %s\n", moviesResults)
+func loadUI(contenttext *widget.Label) {
 
+	var W fyne.Window
 	a := app.New()
 	a.Settings().SetTheme(theme.DarkTheme())
-	W := a.NewWindow("Application-OutSight")
+	W = a.NewWindow("Application-OutSight")
 	W.Resize(fyne.NewSize(640, 460))
 
-	menuBar := []strings{"Home","App-Status"}
-	
-	listView := widget.NewList(func() int {
-		return len(menuBar)
-	}, func() fyne.CanvasObject {
-		return widget.NewLabel("template")
-	}, func(id widget.ListItemID, o fyne.CanvasObject) {
-		o.(*widget.Label).SetText = (menuBar[id])
-
-	})
-
-	contenttext := widget.NewLabel("Welcome to this App")
-	listView.OnSelected = func(id widget.ListItemID) {
-		contenttext.Text = moviesResults.Results[id].Name
-	}
-
 	split := (container.NewHSplit(
-		listView,
+		menuBar(Menu),
 		container.NewMax(contenttext),
 	))
 	split.Offset = 0.2
 	W.SetContent(split)
 	W.ShowAndRun()
+}
 
+func menuBar(Menu []string) *widget.List {
+	listView := widget.NewList(func() int {
+		return len(Menu)
+	},
+		func() fyne.CanvasObject {
+			return widget.NewLabel("template")
+		},
+		func(id widget.ListItemID, o fyne.CanvasObject) {
+			o.(*widget.Label).SetText(Menu[id])
+		})
+	listView.OnSelected = func(id widget.ListItemID) {
+		if id == 0 {
+			contenttext := widget.NewLabel("newtext")
+			loadUI(contenttext)
+		} else if id == 1 {
+			fmt.Println("app")
+		}
+		if id == 2 {
+			fmt.Println("exit")
+		}
+	}
+	return listView
+}
+
+
+
+func changeText(s *widget.Label) {
+
+	var contenttext widget.Label
+	contenttext = *widget.NewLabel("New-Value_pointer")
+	*s = contenttext
 }
