@@ -1,4 +1,4 @@
-module myfirstapp
+module myown
 
 go 1.19
 

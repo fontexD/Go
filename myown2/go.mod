@@ -1,4 +1,4 @@
-module v2
+module myown2
 
 go 1.19
 

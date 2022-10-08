@@ -1,0 +1,19 @@
+{
+    "editor.codeActionsOnSave": null,
+    "go.testOnSave": true,
+    "go.lintOnSave": "package",
+    "go.formatTool": "goimports",
+    "go.testFlags":  [
+        "-v"
+    ],
+    "go.autocompleteUnimportedPackages": true,
+    "[go]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.organizeImports": true
+        },
+    },
+    "terminal.integrated.shell.windows": "C:\\Program Files\\Git\\git-bash.exe",
+    "workbench.editorAssociations": []
+
+}
