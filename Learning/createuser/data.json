@@ -1,0 +1,20 @@
+[
+     {
+          "Firstname": "Sheena",
+          "Lastname": "Holst",
+          "Username": "Nielsen",
+          "Age": 30
+     },
+     {
+          "Firstname": "Ronny",
+          "Lastname": "Fonvig",
+          "Username": "fontex",
+          "Age": 36
+     },
+     {
+          "Firstname": "Lars",
+          "Lastname": "Larsenn",
+          "Username": "user01",
+          "Age": 42
+     }
+]

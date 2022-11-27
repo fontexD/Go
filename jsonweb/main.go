@@ -17,7 +17,7 @@ type person struct {
 
 var tom *person = &person{
 	Name:  "status",
-	Value: "Healthy",
+	Value: "unHealthy",
 }
 
 func tomHandler(w http.ResponseWriter, r *http.Request) {

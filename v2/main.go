@@ -1,6 +1,11 @@
 package main
 
 import (
+	"encoding/json"
+	"fmt"
+	"log"
+	"net/http"
+
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/container"
@@ -8,39 +13,93 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+var Menu = []string{"Home", "App-Status"}
+
+type Data struct {
+	Name  string `json:"key"`
+	Value string `json:"value"`
+}
+
+// Func to pull data from  http.get, it takes Urls as input/call , Returns
+func Getdata(Urls string) (Data, error) {
+
+	var JsonOutput Data
+	rsp, err := http.Get(Urls)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer rsp.Body.Close()
+
+	err = json.NewDecoder(rsp.Body).Decode(&JsonOutput)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return JsonOutput, err
+}
+
 func main() {
-	var content fyne.CanvasObject
+	var W fyne.Window
 	a := app.New()
 	a.Settings().SetTheme(theme.DarkTheme())
-	w := a.NewWindow("Fyne Demo")
+	W = a.NewWindow("Application-OutSight")
+	W.Resize(fyne.NewSize(640, 460))
+	text := widget.NewLabel("Welcome to This App")
 
-	w.SetMaster()
+	// start container with welcome text
+	listView := widget.NewList(func() int {
+		return len(Menu)
+	},
+		func() fyne.CanvasObject {
+			return widget.NewLabel("template")
+		},
+		func(id widget.ListItemID, o fyne.CanvasObject) {
+			o.(*widget.Label).SetText(Menu[id])
+		})
+	listView.OnSelected = func(id widget.ListItemID) {
+		if id == 0 {
+			fmt.Printf("hej")
+			text = widget.NewLabel(dataContainer().Value)
+			contain2 := container.NewMax(text)
 
-	containers := container.NewMax()
-	title := widget.NewLabel("Application Status")
-	intro := widget.NewLabel("Storage.plan2learn.dk")
-	intro2 := widget.NewLabel("")
-	intro2.SetText("hej")
-	intro.Wrapping = fyne.TextWrapWord
-	TABCONTENT := container.NewBorder(container.NewVBox(title, intro, intro2), nil, nil, containers)
+			split := (container.NewHSplit(
+				listView,
+				contain2,
+			))
+			split.Offset = 0.2
 
-	tabs := container.NewAppTabs(
-		container.NewTabItem("TABNAME", TABCONTENT),
-		container.NewTabItem("Tab 2", widget.NewLabel("World!")),
-	)
+			dataContainer()
+			W.SetContent(split)
+			W.Show()
+		} else if id == 1 {
+			fmt.Println("app")
+		}
+		if id == 2 {
+			fmt.Println("exit")
+		}
+	}
 
-	//tabs.Append(container.NewTabItemWithIcon("Home", theme.HomeIcon(), widget.NewLabel("Home tab")))
+	contain := container.NewMax(text)
 
-	tabs.SetTabLocation(container.TabLocationLeading)
+	split := (container.NewHSplit(
+		listView,
+		contain,
+	))
+	split.Offset = 0.2
+	W.SetContent(split)
+	W.ShowAndRun()
+}
 
-	content = container.NewBorder(
-		container.NewVBox(title, intro, intro2), nil, nil, containers)
+func dataContainer() Data {
+	var JsonOutput Data
+	var err error
 
-	split := container.NewHSplit(tabs, content)
-
-	split.Offset = 0
-	w.SetContent(split)
-
-	w.Resize(fyne.NewSize(640, 460))
-	w.ShowAndRun()
+	Urls := []string{"http://127.0.0.1:8080/health", "http://127.0.1.1:8080/health", "http://127.0.2.1:8080/health"}
+	for x := range Urls {
+		JsonOutput, err = Getdata(Urls[x])
+		//error checking
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+	return JsonOutput
 }
