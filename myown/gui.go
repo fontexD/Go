@@ -10,6 +10,42 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+<<<<<<< HEAD
+type TapLabel struct {
+	*widget.Label //composition
+
+	//function pointers to set to get events
+	OnTapped func(string)
+}
+
+func (mc *TapLabel) Tapped(pe *fyne.PointEvent) {
+	if mc.OnTapped != nil {
+		mc.OnTapped(mc.Text)
+	}
+}
+
+func NewTapLabel(text string, tappedLeft func(string)) *TapLabel {
+	return &TapLabel{widget.NewLabel(text), tappedLeft}
+}
+
+func alphabetToBrands(letter string) {
+	fmt.Println(letter)
+}
+
+func main() {
+
+	a := app.New()
+	a.Settings().SetTheme(theme.DarkTheme())
+	W := a.NewWindow("Application-OutSight")
+	W.Resize(fyne.NewSize(640, 460))
+
+	var menu = []string{"Home", "App-Status", "Exit"}
+
+	contenttext := widget.NewLabel("Welcome to this App")
+
+	split := (container.NewHSplit(
+		menuBar(menu),
+=======
 var Menu = []string{"Home", "App-Status"}
 
 func main() {
@@ -17,7 +53,6 @@ func main() {
 	loadUI(contenttext)
 }
 
-<<<<<<< HEAD
 func loadUI(contenttext *widget.Label) {
 
 	var W fyne.Window
@@ -28,11 +63,28 @@ func loadUI(contenttext *widget.Label) {
 
 	split := (container.NewHSplit(
 		menuBar(Menu),
+>>>>>>> 844b52b711ea828d6a7acfae7cf94b9efa26bbdb
 		container.NewMax(contenttext),
 	))
 	split.Offset = 0.2
 	W.SetContent(split)
 	W.ShowAndRun()
+<<<<<<< HEAD
+
+}
+
+func menuBar(data []string) *widget.List {
+	return widget.NewList(
+		func() int {
+			return len(data)
+		},
+		func() fyne.CanvasObject {
+			return widget.NewLabel("template")
+		},
+		func(i widget.ListItemID, o fyne.CanvasObject) {
+			o.(*TapLabel).SetText(data[i])
+		})
+=======
 }
 
 func menuBar(Menu []string) *widget.List {
@@ -55,31 +107,16 @@ func menuBar(Menu []string) *widget.List {
 		if id == 2 {
 			fmt.Println("exit")
 		}
-=======
-	// Create array of urls to send t function GetData
-	Urls := []string{"http://127.0.0.1:8080/health", "http://127.0.1.1:8080/health", "http://127.0.2.1:8080/health"}
-
-	// Infinity loop which render every 5 second
-	//loop:
-	for x := range Urls {
-		JsonOutput, err = Getdata(Urls[x])
-		//error checking
-		if err != nil {
-			log.Fatal(err)
-		}
-		// print .Value from Jsonoutput Struct variable
-		fmt.Println(JsonOutput.Value)
-		time.Sleep(3 * time.Second)
-		fmt.Print(Urls[x])
-		//goto loop
->>>>>>> a6f4352e77f32e2e95c103afd6856374f7a801be
 	}
 	return listView
 }
+
+
 
 func changeText(s *widget.Label) {
 
 	var contenttext widget.Label
 	contenttext = *widget.NewLabel("New-Value_pointer")
 	*s = contenttext
+>>>>>>> 844b52b711ea828d6a7acfae7cf94b9efa26bbdb
 }

@@ -1,4 +1,4 @@
-module gui
+module myown2
 
 go 1.19
 
