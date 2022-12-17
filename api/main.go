@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-<<<<<<< HEAD
 	"fmt"
 	"log"
 	"net/http"
@@ -20,25 +19,11 @@ var Templatedata models.Templatedata
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
 
-=======
-	"net/http"
-
-	"github.com/fontexd/go/api/pkg/models"
-	"github.com/go-redis/redis"
-	"github.com/gorilla/mux"
-)
-
-var env string = "192.168.10.200"
-var Templatedata models.Templatedata
-var Health = []models.Templatedata{
-	{Name: "Redis", Group: "Services", Env: "Production", Status: RedisHealth(env)},
->>>>>>> 567ac3dce3bf4c7ddb5812949ddfd829ad85547b
 }
 
 func main() {
 
 	router := mux.NewRouter().StrictSlash(true)
-<<<<<<< HEAD
 	router.HandleFunc("/services/rabbitmq", GetRabbitmq).Methods("GET")
 	router.HandleFunc("/services/redis", GetRedis).Methods("GET")
 	http.ListenAndServe(":80", router)
@@ -109,36 +94,4 @@ func GetRedis(w http.ResponseWriter, r *http.Request) {
 
 	json.NewEncoder(w).Encode(parseData)
 
-=======
-	router.HandleFunc("/services/redis", getstate).Methods("GET")
-
-	http.ListenAndServe(":80", router)
-}
-func getstate(w http.ResponseWriter, r *http.Request) {
-	json.NewEncoder(w).Encode(Health)
-
-}
-
-func RedisHealth(env string) string {
-	env_redis := env + ":6379"
-
-	// new redis client
-	client := redis.NewClient(&redis.Options{
-
-		Addr: env_redis,
-
-		Password: "",
-
-		DB: 0,
-	})
-
-	// test connection
-
-	_, err := client.Ping().Result()
-	if err != nil {
-		return "UnHealthy"
-	}
-	// return pong if server is online
-	return "Healthy"
->>>>>>> 567ac3dce3bf4c7ddb5812949ddfd829ad85547b
 }
