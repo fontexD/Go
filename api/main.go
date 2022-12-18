@@ -33,18 +33,12 @@ func main() {
 func GetRabbitmq(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	env := r.URL.Query().Get("env")
-	if env == "" {
-		env = "Demo"
-	}
 
-	fmt.Println("", env)
 	id := "Rabbitmq"
 	productModel, err := mysql.SqlConn(id, env)
 	if err != nil {
 		log.Print(err)
 	}
-
-	fmt.Println("Getting State")
 
 	products := productModel
 	parseData := make([]map[string]interface{}, 0)
@@ -68,8 +62,6 @@ func GetRabbitmq(w http.ResponseWriter, r *http.Request) {
 func GetRedis(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 	env := r.URL.Query().Get("env")
-
-	fmt.Println("", env)
 	id := "Redis"
 	productModel, err := mysql.SqlConn(id, env)
 	if err != nil {
