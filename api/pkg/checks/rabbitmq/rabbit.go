@@ -8,7 +8,7 @@ import (
 
 func Check(amqpUrl string) string {
 	// Define RabbitMQ server URL.
-	amqpServerURL := "amqp://" + amqpUrl
+	amqpServerURL := "amqp://guest:Pro27office@" + amqpUrl
 
 	// Create a new RabbitMQ connection.
 	connectRabbitMQ, err := amqp.Dial(amqpServerURL)

@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/fontexd/go/api/pkg/checks/kafka"
 	"github.com/fontexd/go/api/pkg/checks/rabbitmq"
 	"github.com/fontexd/go/api/pkg/checks/redis"
 	"github.com/fontexd/go/api/pkg/models"
@@ -26,6 +27,7 @@ func main() {
 	router := mux.NewRouter().StrictSlash(true)
 	router.HandleFunc("/services/rabbitmq", GetRabbitmq).Methods("GET")
 	router.HandleFunc("/services/redis", GetRedis).Methods("GET")
+	router.HandleFunc("/services/kafka", GetKafka).Methods("GET")
 	http.ListenAndServe(":80", router)
 
 }
@@ -78,6 +80,35 @@ func GetRedis(w http.ResponseWriter, r *http.Request) {
 		singleMap["Type"] = product.Type
 		singleMap["Env"] = product.Env
 		singleMap["Status"] = redis.RedisHealth(product.Host)
+
+		//		fmt.Println(RedisHealth(demo2.Host))
+		parseData = append(parseData, singleMap)
+
+	}
+
+	json.NewEncoder(w).Encode(parseData)
+
+}
+
+func GetKafka(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	env := r.URL.Query().Get("env")
+	id := "Kafka"
+	productModel, err := mysql.SqlConn(id, env)
+	if err != nil {
+		log.Print(err)
+	}
+
+	fmt.Println("Getting State")
+	products := productModel
+	parseData := make([]map[string]interface{}, 0)
+
+	for _, product := range products {
+		var singleMap = make(map[string]interface{})
+		singleMap["Name"] = product.Name
+		singleMap["Type"] = product.Type
+		singleMap["Env"] = product.Env
+		singleMap["Status"] = kafka.KafkaHealthCheck(product.Host)
 
 		//		fmt.Println(RedisHealth(demo2.Host))
 		parseData = append(parseData, singleMap)

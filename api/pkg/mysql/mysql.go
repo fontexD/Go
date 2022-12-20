@@ -11,7 +11,7 @@ func SqlConn(id string, env string) ([]models.Templatedata, error) {
 
 	if env == "" {
 
-		db, _ := sql.Open("mysql", "health:healthAPI@tcp(192.168.10.200:3306)/healthapi")
+		db, _ := sql.Open("mysql", "health:healthAPI@tcp(192.168.1.226:3306)/healthapi")
 		stmt, _ := db.Prepare("SELECT * FROM hosts where Type = ?")
 		rows, err := stmt.Query(id)
 		if err != nil {
